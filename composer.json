@@ -1,0 +1,56 @@
+{
+    "name": "studocu/cacheable-entities",
+    "description": "Cacheable entities are an abstraction layer to extract away cache-related responsibilities.",
+    "keywords": [
+        "StuDocu",
+        "cacheable-entities",
+        "Laravel",
+        "Cache"
+    ],
+    "homepage": "https://github.com/StuDocu/cacheable-entities",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Mazen Touati",
+            "email": "mazen@studocu.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^8.0",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.5.10"
+    },
+    "suggest": {
+        "illuminate/cache": "Required to use the cache."
+    },
+    "autoload": {
+        "psr-4": {
+            "StuDocu\\CacheableEntities\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "StuDocu\\CacheableEntities\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "pint": "vendor/bin/pint",
+        "phpstan": "vendor/bin/phpstan analyse --memory-limit=2G"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
