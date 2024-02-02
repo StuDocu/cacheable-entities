@@ -25,7 +25,7 @@
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^8.0",
         "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^9.5.10"
+        "phpunit/phpunit": "^9.5.10 || ^10.0.0"
     },
     "suggest": {
         "illuminate/cache": "Required to use the cache."
