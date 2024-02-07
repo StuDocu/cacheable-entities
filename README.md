@@ -1,6 +1,7 @@
 ### Cacheable entities
 
 [![Tests](https://github.com/StuDocu/cacheable-entities/actions/workflows/run-tests.yml/badge.svg)](https://github.com/StuDocu/cacheable-entities/actions/workflows/run-tests.yml)
+[![Codecov](https://codecov.io/gh/StuDocu/cacheable-entities/graph/badge.svg?token=BBMKJAQ0Z1)](https://codecov.io/gh/StuDocu/cacheable-entities)
 
 Cacheable entities is an opinionated infrastructure acts as an abstraction layer to extract away cache-related responsibilities.
 
