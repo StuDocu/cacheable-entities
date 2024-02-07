@@ -32,6 +32,7 @@ Cacheable entities is an opinionated infrastructure acts as an abstraction layer
       * [Cacheable Generic](#cacheable-generic)
       * [SerializableCacheable](#serializablecacheable)
       * [SupportsDefaultValue](#supportsdefaultvalue)
+  * [Examples](#examples)
   * [Changelog](#changelog)
   * [License](#license)
 <!-- TOC -->
@@ -382,6 +383,14 @@ This contract accepts two generic definitions `<TUnserialized, TSerialized>`
 #### SupportsDefaultValue
 This contract accepts one generic definition `<TDefault>`,
 which is what the entity will return when missing the cache while using the `AsyncCache` utility.
+
+## Examples
+Some examples of cacheable entities were included to learn more on how to:
+- [Define a simple cacheable entity](examples/Queries/AuthorPopularBooksQuery.php)
+- [Use the stale cache technique*](examples/Queries/AuthorPopularBooksWithStaleCacheQuery.php)
+- [Deal with corrupt serialized values](examples/Queries/UserRecommendedBooks.php)
+
+`*`The stale cache technique is a way to avoid having any user-facing request hitting a cache miss. You can read more about it and its pros and cons in the [blog post](TBD).
 
 ## Changelog
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
