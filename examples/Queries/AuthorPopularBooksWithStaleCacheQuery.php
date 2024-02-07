@@ -88,7 +88,7 @@ class AuthorPopularBooksWithStaleCacheQuery implements Cacheable, SupportsDefaul
             // them synchronously as a last resort.
             return $this->get();
 
-            // Or you can return an empty collection if you don't want to have a value every
+            // Or you can return an empty collection if you don't want to have a value every time.
         }
 
         return $books;

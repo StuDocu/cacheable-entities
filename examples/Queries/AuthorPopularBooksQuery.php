@@ -80,6 +80,6 @@ class AuthorPopularBooksQuery implements Cacheable, SerializableCacheable
     {
         $books->each->setRelation('author', $this->author);
 
-        // Generally speaking, you can do eager loading and such in a similar fashion (for ::get and ::unserialzie).
+        // Generally speaking, you can do eager loading and such in a similar fashion (for ::get and ::unserialize).
     }
 }

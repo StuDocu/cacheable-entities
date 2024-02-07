@@ -185,7 +185,7 @@ class AuthorPopularBooksQuery implements Cacheable, SerializableCacheable
     {
         $books->each->setRelation('author', $this->author);
 
-        // Generally speaking, you can do eager loading and such in a similar fashion (for ::get and ::unserialzie).
+        // Generally speaking, you can do eager loading and such in a similar fashion (for ::get and ::unserialize).
     }
 }
 
@@ -200,10 +200,10 @@ resolve(\StuDocu\CacheableEntities\SyncCache::class)->get($query);
 ```
 
 #### Caveat when unserializing
-Depending on how you serialize your models, you might lose the original order when unserializing, e.g. when only caching the IDs.
+Depending on how you serialize your models, you might lose the original order when unserializing, for example, when only caching the IDs.
 For Entities where the order matters, make sure to retain the original order when unserializing.
 
-Here are some ways of doing so,
+Here are some ways of doing so
 
 ```php
 // Retaining the original order with array_search
@@ -231,7 +231,7 @@ Anytime you want to invalidate the cache value of a cacheable entity, you need t
 
 The use of `SyncCache` for this is because the invalidation happens on the spot.
 
-Here are some examples of how to do so,
+Here are some examples of how to do so
 ```php
 <?php
 $query = new AuthorPopularBooks($author);
