@@ -69,16 +69,6 @@ class AuthorPopularBooksWithStaleCacheQuery implements Cacheable, SupportsDefaul
         return $this->getCacheTTL() + (3600 * 24);
     }
 
-    /**
-     * @param  ReturnStructure  $books
-     */
-    private function setRelations(Collection $books): void
-    {
-        $books->each->setRelation('author', $this->author);
-
-        // Generally speaking, you can do eager loading and such in a similar fashion (for ::get and ::unserialzie).
-    }
-
     public function getCacheMissValue(): Collection
     {
         $books = cache()->get($this->getStaleCacheKey(), Collection::empty());
@@ -92,5 +82,15 @@ class AuthorPopularBooksWithStaleCacheQuery implements Cacheable, SupportsDefaul
         }
 
         return $books;
+    }
+
+    /**
+     * @param  ReturnStructure  $books
+     */
+    private function setRelations(Collection $books): void
+    {
+        $books->each->setRelation('author', $this->author);
+
+        // Generally speaking, you can do eager loading and such in a similar fashion (for ::get and ::unserialize).
     }
 }
