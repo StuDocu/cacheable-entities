@@ -21,6 +21,7 @@ Cacheable entities is an opinionated infrastructure acts as an abstraction layer
       * [Strategies](#strategies)
       * [Access](#access)
     * [Serialization](#serialization)
+      * [Corrupt serialized cache value](#corrupt-serialized-cache-value)
       * [Caveat when unserializing](#caveat-when-unserializing)
     * [Purging the cache](#purging-the-cache)
     * [Async cache default value](#async-cache-default-value)
@@ -197,6 +198,46 @@ resolve(\StuDocu\CacheableEntities\AsyncCache::class)->get($query);
 
 // Get a blocking cache result in the API endpoint.
 resolve(\StuDocu\CacheableEntities\SyncCache::class)->get($query);
+```
+
+#### Corrupt serialized cache value
+In some cases, you might find yourself dealing with an invalid cache value when unserializing.
+
+It might be things like:
+- Invalid format
+- Metadata of data is no longer valid or exist
+- etc.
+
+When this happens, it is beneficial to destroy that cache value and start over.
+Cacheable entities infrastructure is built with this in mind,
+to instruct it that the value is corrupt, and it needs to (1) forget it and (2) compute a fresh value,
+you need to throw the following exception `\StuDocu\CacheableEntities\Exceptions\CorruptSerializedCacheValueException` from your @unserialize method.
+
+Example,
+
+```php
+    /**
+     * @return ReturnStructure
+     *
+     * @throws CorruptSerializedCacheValueException
+     */
+    public function unserialize(mixed $value, mixed $default = null): Collection
+    {
+        // Corrupt format cached
+        if (! is_array($value)) {
+            throw new CorruptSerializedCacheValueException();
+        }
+
+        if (empty($value)) {
+            return Collection::empty();
+        }
+
+        $books = Book::query()->findMany($value);
+
+        $this->eagerLoadRelations($books);
+
+        return $books;
+    }
 ```
 
 #### Caveat when unserializing
