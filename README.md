@@ -8,8 +8,8 @@ Cacheable entities is an opinionated infrastructure acts as an abstraction layer
 ## Features
 - Encapsulated key and TLL management.
 - Blocking/Non-blocking caching strategies.
-- Serializing/Deserializing cache values on the fly.
-- Easy access to real time value.
+- Serializing/Unserializing cache values on the fly.
+- Easy access to real time value (not through cache).
 
 ## Table of contents
 <!-- TOC -->
@@ -18,9 +18,11 @@ Cacheable entities is an opinionated infrastructure acts as an abstraction layer
   * [Usage](#usage)
     * [Defining a cacheable entity](#defining-a-cacheable-entity)
     * [Accessing a cacheable entity](#accessing-a-cacheable-entity)
-      * [Strategies](#strategies)
+      * [Caching Strategies](#caching-strategies)
       * [Access](#access)
-    * [Serialization](#serialization)
+        * [Via cache](#via-cache)
+        * [Without cache](#without-cache)
+    * [Serialization/Unserialization](#serializationunserialization)
       * [Corrupt serialized cache value](#corrupt-serialized-cache-value)
       * [Caveat when unserializing](#caveat-when-unserializing)
     * [Purging the cache](#purging-the-cache)
@@ -59,17 +61,23 @@ The interface implementation requires defining the following methods:
 
 ### Accessing a cacheable entity
 
-#### Strategies
+#### Caching Strategies
 In some cases, you might need to have the same entity cached/accessed differently; Either blocking or non-blocking.
 - Blocking Cache (Synchronous): If we don't have the value, we compute it, cache it, and serve up the result right away.
 - Non-blocking Cache (Asynchronous): if we don't have the value, we dispatch a job to compute it, and return an empty state (like null, empty collection, or an empty array).
 
 #### Access
+
+##### Via cache
 To use any of the two caching strategies described above, we have access to two available utility classes: `SyncCache` and `AsyncCache`.
 - `StuDocu\CacheableEntities\SyncCache@get`: Accepts a cacheable entity and will wait and cache the result if not pre-cached yet.
 - `StuDocu\CacheableEntities\AsyncCache@get`: Accepts a cacheable entity and will dispatch a job to compute the entity value if not pre-cached already then return an empty state. Otherwise, it will return the cached value.
 
-> ⚠️ **Important**: If you have multi servers infrastructure, and you plan to use a cacheable entity asynchronously, make sure to create and deploy the entity separately first without using `asyncCache`. Otherwise, you might have jobs' deserialization errors when deploying. Some regions might be deployed before others.
+> ⚠️ **Important**: If you have multi servers infrastructure, and you plan to use a cacheable entity asynchronously, make sure to create and deploy the entity separately first without using `asyncCache`. Otherwise, you might have class (Job) unserialization errors when deploying. Some regions might be deployed before others.
+
+##### Without cache
+To get a new fresh value of the entity, you can simply call `@get` on any instance of a cacheable entity.
+This will compute the value without interacting with the cache.
 
 **Example**
 ```php
@@ -129,7 +137,7 @@ resolve(AsyncCache::class)->get($query);
 resolve(SyncCache::class)->get($query);
 ```
 
-### Serialization
+### Serialization/Unserialization
 In some cases, you don't want to cache the actual value but rather the metadata of the value, for example, an array of ids.
 Later, when you access the cache, you would run a query to find records by their ids.
 
@@ -149,6 +157,7 @@ use StuDocu\CacheableEntities\Contracts\SerializableCacheable;
 class AuthorPopularBooksQuery implements Cacheable, SerializableCacheable
 {
    // [...]
+   
    /**
     * @param Collection<Book> $value
     * @return array<int>
