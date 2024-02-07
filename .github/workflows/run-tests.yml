@@ -46,3 +46,10 @@ jobs:
 
       - name: Execute tests
         run: composer test
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          directory: build
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
