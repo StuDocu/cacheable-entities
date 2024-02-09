@@ -5,11 +5,57 @@
 
 Cacheable entities is an opinionated infrastructure acts as an abstraction layer to extract away cache-related responsibilities.
 
+```php
+class RecommendedBooksQuery implements Cacheable, SerializableCacheable
+{
+    public function getCacheTTL(): int
+    {
+        return 3600 * 24;
+    }
+
+    public function getCacheKey(): string
+    {
+        return "books:popular.v1";
+    }
+
+    public function get(): Collection
+    {
+        return Book::query()
+            ->wherePopular()
+            ->orderByDesc('document_popularity_scores.score')
+            ->take(config('popular.books.limit'))
+            ->get();
+    }
+    
+    public function serialize(mixed $value): array
+    {
+        return $value->pluck('id')->all();
+    }
+    
+    public function unserialize(mixed $value): Collection
+    {
+        return Book::query()->findMany($value);
+    }
+}
+
+$query = new RecommendedBooksQuery();
+
+// Get a non-blocking cache result in the web endpoint.
+resolve(AsyncCache::class)->get($query);
+
+// Get a blocking cache result in the API endpoint.
+resolve(SyncCache::class)->get($query);
+
+// Get real time value
+$query->get();
+```
+
 ## Features
 - Encapsulated key and TLL management.
 - Blocking/Non-blocking caching strategies.
-- Serializing/Unserializing cache values on the fly.
-- Easy access to real time value (not through cache).
+- Easily serialize/unserialize cache values.
+- Customize Cache Miss resolution.
+- Direct access to real-time values (not through cache).
 
 ## Table of contents
 <!-- TOC -->
@@ -40,7 +86,7 @@ Cacheable entities is an opinionated infrastructure acts as an abstraction layer
 ## Installation
 You can install the package via composer:
 ```bash
-composer require StuDocu/cacheable-entities
+composer require studocu/cacheable-entities
 ```
 
 ## Backstory
@@ -75,10 +121,6 @@ To use any of the two caching strategies described above, we have access to two 
 - `StuDocu\CacheableEntities\AsyncCache@get`: Accepts a cacheable entity and will dispatch a job to compute the entity value if not pre-cached already then return an empty state. Otherwise, it will return the cached value.
 
 > ⚠️ **Important**: If you have multi servers infrastructure, and you plan to use a cacheable entity asynchronously, make sure to create and deploy the entity separately first without using `asyncCache`. Otherwise, you might have class (Job) unserialization errors when deploying. Some regions might be deployed before others.
-
-##### Without cache
-To get a new fresh value of the entity, you can simply call `@get` on any instance of a cacheable entity.
-This will compute the value without interacting with the cache.
 
 **Example**
 ```php
@@ -129,7 +171,7 @@ class AuthorPopularBooksQuery implements Cacheable
 
 // ...
 
-$query = AuthorPopularBooksQuery::make($author);
+$query = new AuthorPopularBooksQuery($author);
 
 // Get a non-blocking cache result in the web endpoint.
 resolve(AsyncCache::class)->get($query);
@@ -137,6 +179,10 @@ resolve(AsyncCache::class)->get($query);
 // Get a blocking cache result in the API endpoint.
 resolve(SyncCache::class)->get($query);
 ```
+
+##### Without cache
+To get a new fresh value of the entity, you can simply call `@get` on any instance of a cacheable entity.
+This will compute the value without interacting with the cache.
 
 ### Serialization/Unserialization
 In some cases, you don't want to cache the actual value but rather the metadata of the value, for example, an array of ids.
@@ -291,7 +337,7 @@ resolve(\StuDocu\CacheableEntities\SyncCache::class)->forget($query);
 ```
 ### Async cache default value
 
-When using `AsyncCache` utility, it will return null if the cache is nonexistent yet.
+When using `AsyncCache` utility, it will return null if the cached yet.
 In some cases, you might need to change the default value.
 
 All you need to do is make the cacheable entity implement the following interface `StuDocu\CacheableEntities\Contracts\SupportDefaultCacheValue`.
