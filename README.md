@@ -95,7 +95,7 @@ At some point of our growth we found ourselves drowning in cache keys and cachin
 Thus, to bring a uniform approach to caching across our codebase, we cooked up an internally standardized (or as we like to call it, opinionated) infrastructure known as "Cacheable Entities". This infrastructure acts as an abstraction layer to extract away cache-related responsibilities.
 We isolated this infrastructure into a standalone Laravel package and made it open-source.
 
-Read more about the backstory at <[Cacheable Entities: A Laravel package with a story](TBD)>.
+Read more about the backstory at <[Cacheable Entities: A Laravel package with a story](https://medium.com/studocu-techblog/cacheable-entities-a-laravel-package-with-a-story-239a8bfc8043)>.
 
 ## Usage
 ### Defining a cacheable entity
@@ -436,7 +436,7 @@ Some examples of cacheable entities were included to learn more on how to:
 - [Use the stale cache technique*](examples/Queries/AuthorPopularBooksWithStaleCacheQuery.php)
 - [Deal with corrupt serialized values](examples/Queries/UserRecommendedBooks.php)
 
-`*`The stale cache technique is a way to avoid having any user-facing request hitting a cache miss. You can read more about it and its pros and cons in the [blog post](TBD).
+`*`The stale cache technique is a way to avoid having any user-facing request hitting a cache miss. You can read more about it and its pros and cons in the [blog post](https://medium.com/studocu-techblog/cacheable-entities-a-laravel-package-with-a-story-239a8bfc8043).
 
 ## Changelog
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
